@@ -9,7 +9,7 @@ end
 (0..(files.size - 1)).each do |i|
   out_files = []
   (0..(files[i].size - 1)).each do |j|
-    out_files << files[i][j]
+    out_files << files[j][i]
   end
   puts out_files.join("\t")
 end
