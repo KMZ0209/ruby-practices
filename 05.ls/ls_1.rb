@@ -13,8 +13,7 @@ def print_files_count_in_columns(column_count: 3)
   transposed_files = nested_files.transpose
   transposed_files.each do |file_names|
     file_names.each do |file_name|
-      count = max_file_size
-      print file_name.to_s.ljust(count + 1)
+      print file_name.to_s.ljust(max_file_size + 1)
     end
     print "\n"
   end
