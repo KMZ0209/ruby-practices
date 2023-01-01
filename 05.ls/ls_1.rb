@@ -5,7 +5,7 @@ def files_list_and_file_count
   file_count = @files.size
 end
 
-def transposed_files_and_max_file_size
+def main
   column_count = (files_list_and_file_count.to_f / 3).ceil
   nested_files = @files.each_slice(column_count).to_a
   row_count = nested_files.max_by(&:size).size
@@ -22,4 +22,4 @@ def transposed_files_and_max_file_size
   end
 end
 
-transposed_files_and_max_file_size
+main
