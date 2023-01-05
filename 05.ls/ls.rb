@@ -1,17 +1,23 @@
 # frozen_string_literal: true
 
+require 'optparse'
+
 COLUMN_COUNT = 3
 
 def main
-  files = Dir.glob('*')
-
-  transposed_files = make_transposed_files(files)
+  results ||= ARGV.getopts('a')
+  files = if results['a']
+            Dir.glob('*', File::FNM_DOTMATCH)
+          else
+            Dir.glob('*')
+          end
+  transposed_files = build_transposed_files(files)
 
   max_file_size = files.map(&:size).max
   output_files(transposed_files, max_file_size)
 end
 
-def make_transposed_files(files)
+def build_transposed_files(files)
   row_count = (files.size.to_f / COLUMN_COUNT).ceil
   nested_files = files.each_slice(row_count).to_a
   nested_files.each do |file_names|
@@ -28,5 +34,4 @@ def output_files(transposed_files, max_file_size)
     print "\n"
   end
 end
-
 main
