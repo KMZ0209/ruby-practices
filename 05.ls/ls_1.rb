@@ -5,8 +5,8 @@ require 'optparse'
 COLUMN_COUNT = 3
 
 def main
-  detected_patterns ||= ARGV.getopts('a')
-  files = detected_patterns['a'] ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
+  options ||= ARGV.getopts('a')
+  files = options['a'] ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
   transposed_files = build_transposed_files(files)
   max_file_size = files.map(&:size).max
   output_files(transposed_files, max_file_size)
