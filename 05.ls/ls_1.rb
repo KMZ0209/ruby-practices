@@ -1,32 +1,65 @@
 # frozen_string_literal: true
 
-require 'optparse'
+require 'etc'
 
-COLUMN_COUNT = 3
+FILE_TYPE = {
+  'file' => '-',
+  'link' => 'l',
+  'directory' => 'd'
+}.freeze
+
+PERMISSION_TYPE = {
+  '0' => '---',
+  '1' => '--x',
+  '2' => '-w-',
+  '3' => '-wx',
+  '4' => 'r--',
+  '5' => 'r-x',
+  '6' => 'rw-',
+  '7' => 'rwx'
+}.freeze
 
 def main
-  options = ARGV.getopts('r')
-  files = options['r'] ? Dir.glob('*').reverse : Dir.glob('*')
-  transposed_files = build_transposed_files(files)
-  max_file_size = files.map(&:size).max
-  output_files(transposed_files, max_file_size)
+  files = Dir.glob('*')
+  output_total_block_count(files)
+  output_file_data(files)
 end
 
-def build_transposed_files(files)
-  row_count = (files.size.to_f / COLUMN_COUNT).ceil
-  nested_files = files.each_slice(row_count).to_a
-  nested_files.each do |file_names|
-    file_names << nil while file_names.size < row_count
+def output_total_block_count(files)
+  total_block_count = 0
+  files.each do |file_count|
+    stat_file = File.lstat(file_count)
+    total_block_count += stat_file.blocks
   end
-  nested_files.transpose
+  puts "total #{total_block_count}"
 end
 
-def output_files(transposed_files, max_file_size)
-  transposed_files.each do |file_names|
-    file_names.each do |file_name|
-      print file_name.to_s.ljust(max_file_size + 1)
-    end
-    print "\n"
+def file_type(stat_file)
+  file_type = stat_file.ftype
+  FILE_TYPE[file_type]
+end
+
+def permission(stat_file)
+  permission_count = stat_file.mode.to_s(8).slice(-3, 3)
+  permission_type = permission_count.split('').map do |file_count|
+    PERMISSION_TYPE[file_count]
+  end
+  permission_type.join('').to_s.ljust(8)
+end
+
+def output_file_data(files)
+  files.each do |file|
+    stat_file = File.stat(file)
+    output_data = [
+      file_type(stat_file) + permission(stat_file),
+      stat_file.nlink,
+      Etc.getpwuid(stat_file.uid).name,
+      Etc.getgrgid(stat_file.gid).name,
+      stat_file.size.to_s.rjust(4),
+      stat_file.mtime.strftime('%b %d %H:%M'),
+      file
+    ]
+    puts output_data.join(' ')
   end
 end
 
