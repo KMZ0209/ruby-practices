@@ -26,10 +26,6 @@ def main
   options = ARGV.getopts('arl')
   files = Dir.glob('*')
   files_a = Dir.glob('*', File::FNM_DOTMATCH)
-  select_options(options, files, files_a)
-end
-
-def select_options(options, files, files_a)
   output_ls_command = options['a'] ? files_a : files
   output_ls_command = options['r'] ? output_ls_command.reverse : output_ls_command
   if options['l']
