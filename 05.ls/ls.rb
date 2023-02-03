@@ -24,29 +24,18 @@ PERMISSION_TYPE = {
 
 def main
   options = ARGV.getopts('arl')
-  if options['r'] && options['l'] && options['a']
-    files = Dir.glob('*', File::FNM_DOTMATCH).reverse
-    output_ls_command_option_l(files)
-  elsif options['a'] && options['r']
-    files = Dir.glob('*', File::FNM_DOTMATCH).reverse
-    output_ls_command_option_a_r(files)
-  elsif options['a'] && options['l']
-    files = Dir.glob('*', File::FNM_DOTMATCH)
-    output_ls_command_option_l(files)
-  elsif options['r'] && options['l']
-    files = Dir.glob('*').reverse
-    output_ls_command_option_l(files)
-  elsif options['a']
-    files = Dir.glob('*', File::FNM_DOTMATCH)
-    output_ls_command_option_a_r(files)
-  elsif options['r']
-    files = Dir.glob('*').reverse
-    output_ls_command_option_a_r(files)
-  elsif options['l']
-    files = Dir.glob('*')
-    output_ls_command_option_l(files)
+  files = Dir.glob('*')
+  files_a = Dir.glob('*', File::FNM_DOTMATCH)
+  select_options(options, files, files_a)
+end
+
+def select_options(options, files, files_a)
+  output_ls_command = options['a'] ? files_a : files
+  output_ls_command = options['r'] ? output_ls_command.reverse : output_ls_command
+  if options['l']
+    output_ls_command_option_l(output_ls_command)
   else
-    Dir.glob('*')
+    output_ls_command_option_a_r(output_ls_command)
   end
 end
 
