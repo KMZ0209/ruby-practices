@@ -24,15 +24,9 @@ PERMISSION_TYPE = {
 
 def main
   options = ARGV.getopts('arl')
-  files = Dir.glob('*')
-  files_a = Dir.glob('*', File::FNM_DOTMATCH)
-  output_ls_command = options['a'] ? files_a : files
-  output_ls_command = options['r'] ? output_ls_command.reverse : output_ls_command
-  if options['l']
-    output_ls_command_option_l(output_ls_command)
-  else
-    output_ls_command_option_a_r(output_ls_command)
-  end
+  files = options['a'] ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
+  files = options['r'] ? files.reverse : files
+  options['l'] ? output_ls_command_option_l(files) : operation_output_files(files)
 end
 
 def output_ls_command_option_l(files)
@@ -40,7 +34,7 @@ def output_ls_command_option_l(files)
   output_files_l(files)
 end
 
-def output_ls_command_option_a_r(files)
+def operation_output_files(files)
   transposed_files = build_transposed_files(files)
   max_file_size = files.map(&:size).max
   output_files(transposed_files, max_file_size)
