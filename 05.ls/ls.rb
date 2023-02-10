@@ -25,18 +25,18 @@ PERMISSION_TYPE = {
 def main
   options = ARGV.getopts('arl')
   files = options['a'] ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
-  files = options['r'] ? files.reverse : files
-  options['l'] ? output_ls_command_option_l(files) : operation_output_files(files)
+  sorted_files = options['r'] ? files.reverse : files
+  options['l'] ? output_for_long_format(sorted_files) : output_for_short_format(sorted_files)
 end
 
-def output_ls_command_option_l(files)
-  output_total_block_count(files)
-  output_files_l(files)
+def output_for_long_format(sorted_files)
+  output_total_block_count(sorted_files)
+  output_files_l(sorted_files)
 end
 
-def operation_output_files(files)
-  transposed_files = build_transposed_files(files)
-  max_file_size = files.map(&:size).max
+def output_for_short_format(sorted_files)
+  transposed_files = build_transposed_files(sorted_files)
+  max_file_size = sorted_files.map(&:size).max
   output_files(transposed_files, max_file_size)
 end
 
@@ -58,8 +58,8 @@ def output_files(transposed_files, max_file_size)
   end
 end
 
-def output_total_block_count(files)
-  total_block_count = files.sum { |file_count| File.lstat(file_count).blocks }
+def output_total_block_count(sorted_files)
+  total_block_count = sorted_files.sum { |file_count| File.lstat(file_count).blocks }
   puts "total #{total_block_count}"
 end
 
@@ -71,8 +71,8 @@ def build_permission(stat_file)
   permission_types.join('')
 end
 
-def output_files_l(files)
-  files.each do |file|
+def output_files_l(sorted_files)
+  sorted_files.each do |file|
     stat_file = File.stat(file)
     output_data = [
       FILE_TYPE[stat_file.ftype] + build_permission(stat_file),
