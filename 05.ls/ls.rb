@@ -31,13 +31,13 @@ end
 
 def output_for_long_format(files)
   output_total_block_count(files)
-  long_formatted_output_files(files)
+  output_long_formatted_files(files)
 end
 
 def output_for_short_format(files)
   transposed_files = build_transposed_files(files)
   max_file_size = files.map(&:size).max
-  short_formatted_output_files(transposed_files, max_file_size)
+  output_short_formatted_files(transposed_files, max_file_size)
 end
 
 def build_transposed_files(files)
@@ -49,7 +49,7 @@ def build_transposed_files(files)
   nested_files.transpose
 end
 
-def short_formatted_output_files(transposed_files, max_file_size)
+def output_short_formatted_files(transposed_files, max_file_size)
   transposed_files.each do |file_names|
     file_names.each do |file_name|
       print file_name.to_s.ljust(max_file_size + 1)
@@ -71,7 +71,7 @@ def build_permission(stat_file)
   permission_types.join('')
 end
 
-def long_formatted_output_files(files)
+def output_long_formatted_files(files)
   files.each do |file|
     stat_file = File.stat(file)
     output_data = [
