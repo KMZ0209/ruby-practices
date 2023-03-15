@@ -4,134 +4,71 @@ require 'optparse'
 
 def main
   options = ARGV.getopts('lwc')
-  files = Dir.glob('*')
-  if options['l'] && options['w'] && options['c']
-    output_for_line_word_byte_count(files)
-  elsif options['l'] && options['w']
-    output_for_line_word_count(files)
-  elsif options['w'] && options['c']
-    output_for_word_byte_count(files)
-  elsif options['l'] && options['c']
-    output_for_line_byte_count(files)
-  elsif options['l']
-    output_for_line_count(files)
-  elsif options['w']
-    output_for_word_count(files)
-  elsif options['c']
-    output_for_byte_count(files)
-  elsif ARGV[0]
-    output_for_file_names(files)
+  files = ARGV
+  file_data = ARGV.select { |arg| File.file?(arg) } || $stdin.read
+  if file_data.empty?
+    output_standard_input_count(options)
   else
-    output_for_standard_input(files)
+    output_files_count(options, file_data) if options['l'] || options['w'] || options['c']
+    output_multi_file_count(files, file_data) if file_data.length >= 2
   end
 end
 
-def output_for_line_word_byte_count(files)
-  file = files.pop
-  print File.read(file).count("\n").to_s.ljust(4)
-  print word_count(file).to_s.ljust(4)
-  print byte_count(file).to_s.ljust(5)
-  print "#{file}\n".to_s.ljust(4)
-end
-
-def output_for_line_word_count(files)
-  file = files.pop
-  print File.read(file).count("\n").to_s.ljust(4)
-  print word_count(file).to_s.ljust(4)
-  print "#{file}\n".to_s.ljust(4)
-end
-
-def output_for_word_byte_count(files)
-  file = files.pop
-  print word_count(file).to_s.ljust(4)
-  print byte_count(file).to_s.ljust(5)
-  print "#{file}\n".to_s.ljust(4)
-end
-
-def output_for_line_byte_count(files)
-  file = files.pop
-  print File.read(file).count("\n").to_s.ljust(4)
-  print byte_count(file).to_s.ljust(5)
-  print "#{file}\n".to_s.ljust(4)
-end
-
-def output_for_line_count(files)
-  file = files.pop
-  output_line_count(file)
-end
-
-def output_for_word_count(files)
-  file = files.pop
-  output_word_count(file)
-end
-
-def output_for_byte_count(files)
-  file = files.pop
-  output_byte_count(file)
-end
-
-def line_count(file)
-  File.read(file).count("\n")
-end
-
-def word_count(file)
-  words = File.read(file).split(/\s+/).size
-  words.to_i
-end
-
-def byte_count(file)
-  bytes = File.read(file).bytesize
-  bytes.to_i
-end
-
-def total_line_count(files)
-  files.sum { |file| line_count(file) }
-end
-
-def total_word_count(files)
-  files.sum { |file| word_count(file) }
-end
-
-def total_byte_count(files)
-  files.sum { |file| byte_count(file) }
-end
-
-def output_line_count(file)
-  print File.read(file).count("\n").to_s.ljust(4)
-  print "#{file}\n"
-end
-
-def output_word_count(file)
-  print word_count(file).to_s.ljust(4)
-  print "#{file}\n"
-end
-
-def output_byte_count(file)
-  print byte_count(file).to_s.ljust(5)
-  print "#{file}\n "
-end
-
-def output_for_standard_input(_files)
+# 標準入力
+def output_standard_input_count(options)
   input = $stdin.read
-  output_standard_input_count(input)
+  print input.count("\n").to_s.ljust(8) if options['l']
+  print input.split(/\s+/).size.to_s.ljust(8) if options['w']
+  print input.bytesize.to_s.ljust(8) if options['c']
 end
 
-def output_standard_input_count(input)
-  print input.count("\n").to_s.ljust(8)
-  print input.split(/\s+/).size.to_s.ljust(8)
-  print "#{input.bytesize.to_s.ljust(8)}\n"
+# オプション
+def output_files_count(options, file_data)
+  file_data.each do |file|
+    line_count(file_data) if options['l']
+    word_count(file_data) if options['w']
+    byte_count(file_data) if options['c']
+    print "#{file}\n"
+  end
 end
 
-def output_for_file_names(files)
+# 行数える
+def line_count(file_data)
+  file_data.each do |file|
+    print File.read(file).count("\n").to_s.ljust(4)
+  end
+end
+
+# 単語数数える
+def word_count(file_data)
+  file_data.each do |file|
+    print File.read(file).split(/\s+/).size.to_s.ljust(4)
+  end
+end
+
+# バイト数数える
+def byte_count(file_data)
+  file_data.each do |file|
+    print File.read(file).bytesize.to_s.ljust(5)
+  end
+end
+
+# ファイル名が複数個のとき
+def output_multi_file_count(files, _file_data)
+  total_lines = 0
+  total_words = 0
+  total_bytes = 0
   files.each do |file|
-    print File.read(file).count("\n").to_s.rjust(4)
-    print word_count(file).to_s.rjust(5)
-    print byte_count(file).to_s.rjust(5)
+    file_content = File.read(file)
+    total_lines += file_content.count("\n")
+    total_words += file_content.split(/\s+/).size
+    total_bytes += file_content.bytesize
+    print file_content.count("\n").to_s.ljust(4)
+    print file_content.split(/\s+/).size.to_s.ljust(4)
+    print file_content.bytesize.to_s.ljust(5)
     print "#{file}\n".to_s.rjust(7)
   end
-  print total_line_count(files).to_s.rjust(4)
-  print total_word_count(files).to_s.rjust(5)
-  print total_byte_count(files).to_s.rjust(5)
+  print total_lines.to_s.ljust(4) + total_words.to_s.ljust(4) + total_bytes.to_s.ljust(5)
   print "total\n".to_s.rjust(7)
 end
 
