@@ -7,7 +7,8 @@ def main
   files = ARGV
   file_data = ARGV.select { |arg| File.file?(arg) } || $stdin.read
   if file_data.empty?
-    output_standard_input_count(options)
+    output_standard_input_options_count(options) if options['l'] || options['w'] || options['c']
+    output_standard_input_count
   else
     output_files_count(options, file_data) if options['l'] || options['w'] || options['c']
     output_multi_file_count(files, file_data) if file_data.length >= 2
@@ -15,20 +16,46 @@ def main
 end
 
 # 標準入力
-def output_standard_input_count(options)
+def output_standard_input_options_count(options)
   input = $stdin.read
-  print input.count("\n").to_s.ljust(8) if options['l']
-  print input.split(/\s+/).size.to_s.ljust(8) if options['w']
-  print input.bytesize.to_s.ljust(8) if options['c']
+  if options.empty?
+    print output_standard_input_count
+  else
+    print input.count("\n").to_s.ljust(8) if options['l']
+    print input.split(/\s+/).size.to_s.ljust(8) if options['w']
+    print input.bytesize.to_s.ljust(8) if options['c']
+  end
+end
+
+# 標準入力、オプションなし
+def output_standard_input_count
+  input = $stdin.read
+  print input.count("\n").to_s.ljust(8)
+  print input.split(/\s+/).size.to_s.ljust(8)
+  print input.bytesize.to_s.ljust(8)
 end
 
 # オプション
 def output_files_count(options, file_data)
+  if options.empty?
+    output_single_file_count(file_data)
+  else
+    file_data.each do |file|
+      line_count(file_data) if options['l']
+      word_count(file_data) if options['w']
+      byte_count(file_data) if options['c']
+      print "#{file}\n"
+    end
+  end
+end
+
+# ファイルひとつ
+def output_single_file_count(file_data)
   file_data.each do |file|
-    line_count(file_data) if options['l']
-    word_count(file_data) if options['w']
-    byte_count(file_data) if options['c']
-    print "#{file}\n"
+    print File.read(file).count("\n").to_s.ljust(4)
+    print File.read(file).split(/\s+/).size.to_s.ljust(4)
+    print File.read(file).bytesize.to_s.ljust(5)
+    print "#{file}\n".to_s.rjust(7)
   end
 end
 
