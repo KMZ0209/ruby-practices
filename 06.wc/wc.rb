@@ -7,8 +7,7 @@ def main
   files = ARGV
   file_data = ARGV.select { |arg| File.file?(arg) } || $stdin.read
   if file_data.empty?
-    output_standard_input_options_count(options) if options['l'] || options['w'] || options['c']
-    output_standard_input_count
+    output_standard_input_options_count(options)
   else
     output_files_count(options, file_data) if options['l'] || options['w'] || options['c']
     output_multi_file_count(files, file_data) if file_data.length >= 2
@@ -18,18 +17,17 @@ end
 # 標準入力
 def output_standard_input_options_count(options)
   input = $stdin.read
-  if options.empty?
-    print output_standard_input_count
-  else
+  if options['l'] || options['w'] || options['c']
     print input.count("\n").to_s.ljust(8) if options['l']
     print input.split(/\s+/).size.to_s.ljust(8) if options['w']
     print input.bytesize.to_s.ljust(8) if options['c']
+  else
+    output_standard_input_count(input)
   end
 end
 
 # 標準入力、オプションなし
-def output_standard_input_count
-  input = $stdin.read
+def output_standard_input_count(input)
   print input.count("\n").to_s.ljust(8)
   print input.split(/\s+/).size.to_s.ljust(8)
   print input.bytesize.to_s.ljust(8)
