@@ -12,7 +12,7 @@ end
 
 def select_file_data(file_data, files, options, option)
   if file_data.empty?
-    output_standard_input_options_count(options, option)
+    output_standard_input_count(options, option)
   elsif file_data.length == 1
     output_files_count(file_data, options, option)
   elsif file_data.length >= 2
@@ -20,39 +20,17 @@ def select_file_data(file_data, files, options, option)
   end
 end
 
-def output_standard_input_options_count(options, option)
-  if option
-    input = $stdin.read
-    print line_count(input).to_s.rjust(8) if options['l']
-    print word_count(input).to_s.rjust(8) if options['w']
-    print byte_count(input).to_s.rjust(8) if options['c']
-  else
-    output_standard_input_count
-  end
-end
-
-def output_standard_input_count
+def output_standard_input_count(options, option)
   input = $stdin.read
-  print line_count(input).to_s.rjust(8)
-  print word_count(input).to_s.rjust(8)
-  print byte_count(input).to_s.rjust(8)
+  print line_count(input).to_s.rjust(8) if !option || options['l']
+  print word_count(input).to_s.rjust(8) if !option || options['w']
+  print byte_count(input).to_s.rjust(8) if !option || options['c']
 end
 
 def output_files_count(file_data, options, option)
-  if option
-    output_line_count(file_data) if options['l']
-    output_word_count(file_data) if options['w']
-    output_byte_count(file_data) if options['c']
-    output_file(file_data)
-  else
-    output_single_file_count(file_data)
-  end
-end
-
-def output_single_file_count(file_data)
-  output_line_count(file_data)
-  output_word_count(file_data)
-  output_byte_count(file_data)
+  output_line_count(file_data) if !option || options['l']
+  output_word_count(file_data) if !option || options['w']
+  output_byte_count(file_data) if !option || options['c']
   output_file(file_data)
 end
 
@@ -93,46 +71,25 @@ def output_file(file_data)
 end
 
 def output_multi_file_options_count(files, options, option)
-  if option
-    total_lines = 0
-    total_words = 0
-    total_bytes = 0
-    files.each do |file|
-      file_content = File.read(file)
-      total_lines += line_count(file_content)
-      total_words += word_count(file_content)
-      total_bytes += byte_count(file_content)
-      print line_count(file_content).to_s.rjust(4) if options['l']
-      print word_count(file_content).to_s.rjust(4) if options['w']
-      print byte_count(file_content).to_s.rjust(6) if options['c']
-      print "#{file}\n".to_s.rjust(8)
-    end
-    print total_lines.to_s.rjust(4) if options['l']
-    print total_words.to_s.rjust(4) if options['w']
-    print total_bytes.to_s.rjust(6) if options['c']
-    print "total\n".to_s.rjust(8)
-  else
-    output_multi_file_count(files)
-  end
-end
-
-def output_multi_file_count(files)
   total_lines = 0
   total_words = 0
   total_bytes = 0
   files.each do |file|
     file_content = File.read(file)
-    total_lines += line_count(file_content)
-    total_words += word_count(file_content)
-    total_bytes += byte_count(file_content)
-    print line_count(file_content).to_s.rjust(4)
-    print word_count(file_content).to_s.rjust(4)
-    print byte_count(file_content).to_s.rjust(6)
+    line_count = line_count(file_content)
+    word_count = word_count(file_content)
+    byte_count = byte_count(file_content)
+    print line_count.to_s.rjust(4) if !option || options['l']
+    print word_count.to_s.rjust(4) if !option || options['w']
+    print byte_count.to_s.rjust(6) if !option || options['c']
     print "#{file}\n".to_s.rjust(8)
+    total_lines += line_count
+    total_words += word_count
+    total_bytes += byte_count
   end
-  print total_lines.to_s.rjust(4)
-  print total_words.to_s.rjust(4)
-  print total_bytes.to_s.rjust(6)
+  print total_lines.to_s.rjust(4) if !option || options['l']
+  print total_words.to_s.rjust(4) if !option || options['w']
+  print total_bytes.to_s.rjust(6) if !option || options['c']
   print "total\n".to_s.rjust(8)
 end
 
