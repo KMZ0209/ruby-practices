@@ -30,24 +30,27 @@ def output_multi_file_count(file_data, options)
     line_count = line_count(file_content)
     word_count = word_count(file_content)
     byte_count = byte_count(file_content)
-    output_line_count(line_count, options)
-    output_word_count(word_count, options)
-    output_byte_count(byte_count, options)
+    output_terms_count(line_count, word_count, byte_count, options)
     output_file_name(file)
     total_lines += line_count
     total_words += word_count
     total_bytes += byte_count
   end
-  output_line_count(total_lines, options)
-  output_word_count(total_words, options)
-  output_byte_count(total_bytes, options)
+  output_terms_count(total_lines, total_words, total_bytes, options)
   output_file_name('total')
 end
 
+def output_terms_count(line_count, word_count, byte_count, options)
+  output_line_count(line_count, options)
+  output_word_count(word_count, options)
+  output_byte_count(byte_count, options)
+end
+
 def output_count(file_content, options)
-  output_line_count(line_count(file_content), options)
-  output_word_count(word_count(file_content), options)
-  output_byte_count(byte_count(file_content), options)
+  line_count = line_count(file_content)
+  word_count = word_count(file_content)
+  byte_count = byte_count(file_content)
+  output_terms_count(line_count, word_count, byte_count, options)
 end
 
 def line_count(file_content)
