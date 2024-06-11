@@ -42,7 +42,13 @@ class Game
   end
 
   def score
-    frames_data = frames
-    last_frame(frames_data)
+    @frames = build_frames
+    game_score = 0
+    10.times do |idx|
+      frame = @frames[idx]
+      game_score += frame.score
+      game_score += calculate_bonus_point(idx, frame)
+    end
+    game_score
   end
 end
