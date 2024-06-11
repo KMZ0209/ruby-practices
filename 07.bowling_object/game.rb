@@ -55,3 +55,6 @@ class Game
     end
   end
 end
+shot_instances = ARGV[0].split(',')
+game = Game.new(shot_instances)
+puts game.score
