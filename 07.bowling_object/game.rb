@@ -22,23 +22,22 @@ class Game
     result + calculate_bonus_points(frames, next1, next2)
   end
 
-  def calculate_bonus_points(frames, next1, next2)
-    result = 0
-    while frames.length.positive?
-      frame = frames.pop
-      if frame == [10, 0]
-        result += next1 + next2 + 10
-        next2 = next1
-      elsif frame.sum == 10
-        result += next1 + 10
-        next2 = frame[1]
+  def calculate_bonus_point(idx, frame)
+    return 0 if idx >= 9
+
+    if frame.strike?
+      next_frame = @frames[idx + 1]
+      next_two_frame = @frames[idx + 2]
+      if next_frame.strike? && next_two_frame
+        [next_frame.first_shot.score, next_two_frame.first_shot.score].sum
       else
-        result += frame.sum
-        next2 = frame[1]
+        [next_frame.first_shot.score, next_frame.second_shot.score].sum
       end
-      next1 = frame[0]
+    elsif frame.spare?
+      @frames[idx + 1].first_shot.score
+    else
+      0
     end
-    result
   end
 
   def score
