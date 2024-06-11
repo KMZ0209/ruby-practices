@@ -2,24 +2,39 @@
 
 require_relative './frame'
 class Game
-  def initialize(shots)
-    @shots = shots
+  def initialize(shot_instances)
+    @shot_instances = shot_instances
   end
 
-  def frames
-    frames = []
-    @shots.each_slice(2) do |s|
-      frames << s
+  def score
+    @frames = build_frames
+    game_score = 0
+    10.times do |idx|
+      frame = @frames[idx]
+      game_score += frame.score
+      game_score += calculate_bonus_point(idx, frame)
     end
-    frames = frames[0..8] << frames[9..].flatten
+    game_score
   end
 
-  def last_frame(frames)
-    last_frame = frames.pop
-    result = last_frame.sum
-    next1 = last_frame[0]
-    next2 = last_frame[0] == 10 ? last_frame[2] : last_frame[1]
-    result + calculate_bonus_points(frames, next1, next2)
+  def build_frames
+    frames = []
+    i = 0
+    while i < @shot_instances.size
+      if frames.size < 9
+        if @shot_instances[i] == 'X'
+          frames << Frame.new('X', '0')
+          i += 1
+        else
+          frames << Frame.new(@shot_instances[i], @shot_instances[i + 1])
+          i += 2
+        end
+      else
+        frames << Frame.new(@shot_instances[i], @shot_instances[i + 1], @shot_instances[i + 2])
+        break
+      end
+    end
+    frames
   end
 
   def calculate_bonus_point(idx, frame)
@@ -38,16 +53,5 @@ class Game
     else
       0
     end
-  end
-
-  def score
-    @frames = build_frames
-    game_score = 0
-    10.times do |idx|
-      frame = @frames[idx]
-      game_score += frame.score
-      game_score += calculate_bonus_point(idx, frame)
-    end
-    game_score
   end
 end
