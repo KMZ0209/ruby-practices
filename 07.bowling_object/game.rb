@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 require_relative './frame'
+
 class Game
-  def initialize(shot_marks)
-    @shot_marks = shot_marks
+  def initialize(marks)
+    @shot_marks = marks.map { |mark| Shot.new(mark) }
   end
 
   def score
     @frames = build_frames
     game_score = 0
-    10.times do |idx|
-      frame = @frames[idx]
+    @frames.each.with_index do |frame, idx|
       game_score += frame.score
       game_score += calculate_bonus_point(idx, frame)
     end
@@ -22,8 +22,8 @@ class Game
     i = 0
     while i < @shot_marks.size
       if frames.size < 9
-        if @shot_marks[i] == 'X'
-          frames << Frame.new('X', '0')
+        if @shot_marks[i].strike?
+          frames << Frame.new(@shot_marks[i], Shot.new('0'))
           i += 1
         else
           frames << Frame.new(@shot_marks[i], @shot_marks[i + 1])
@@ -54,5 +54,4 @@ class Game
       0
     end
   end
-end
 end
