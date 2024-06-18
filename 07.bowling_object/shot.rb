@@ -1,13 +1,22 @@
 # frozen_string_literal: true
 
 class Shot
+  attr_reader :score
+
   def initialize(mark)
-    @mark = mark
+    @score = mark_to_score(mark)
   end
 
-  def score
-    return 10 if @mark == 'X'
+  def strike?
+    @score == 10
+  end
 
-    @mark.to_i
+  def mark_to_score(mark)
+    case mark
+    when 'X'
+      10
+    else
+      mark.to_i
+    end
   end
 end
