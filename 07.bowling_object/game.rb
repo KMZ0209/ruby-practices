@@ -9,12 +9,9 @@ class Game
 
   def score
     @frames = build_frames
-    game_score = 0
-    @frames.each.with_index do |frame, idx|
-      game_score += frame.score
-      game_score += calculate_bonus_point(idx, frame)
+    @frames.each_with_index.sum do |frame, idx|
+      frame.score + calculate_bonus_point(idx, frame)
     end
-    game_score
   end
 
   private
