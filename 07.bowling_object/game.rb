@@ -4,7 +4,7 @@ require_relative './frame'
 
 class Game
   def initialize(marks)
-    @shot_marks = marks.map { |mark| Shot.new(mark) }
+    @shot_instances = marks.map { |mark| Shot.new(mark) }
   end
 
   def score
@@ -22,17 +22,17 @@ class Game
   def build_frames
     frames = []
     i = 0
-    while i < @shot_marks.size
+    while i < @shot_instances.size
       if frames.size < 9
-        if @shot_marks[i].strike?
-          frames << Frame.new(@shot_marks[i], Shot.new('0'))
+        if @shot_instances[i].strike?
+          frames << Frame.new(@shot_instances[i], Shot.new('0'))
           i += 1
         else
-          frames << Frame.new(@shot_marks[i], @shot_marks[i + 1])
+          frames << Frame.new(@shot_instances[i], @shot_instances[i + 1])
           i += 2
         end
       else
-        frames << Frame.new(@shot_marks[i], @shot_marks[i + 1], @shot_marks[i + 2])
+        frames << Frame.new(@shot_instances[i], @shot_instances[i + 1], @shot_instances[i + 2])
         break
       end
     end
