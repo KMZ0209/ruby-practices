@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
 class Shot
-  STRIKE_MARK = 'X'
+  PERFECT_SCORE_MARK = 'X'
+  PERFECT_SCORE = 10
 
   attr_reader :score
 
   def initialize(mark)
-    @score = mark == STRIKE_MARK ? 10 : mark.to_i
+    @score = mark == PERFECT_SCORE_MARK ? PERFECT_SCORE : mark.to_i
   end
 
   def perfect_score
-    @score == 10
+    @score == PERFECT_SCORE
   end
 end
