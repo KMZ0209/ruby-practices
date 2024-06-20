@@ -16,10 +16,10 @@ class Frame
   end
 
   def strike?
-    @first_shot.score == Shot::STRIKE_SCORE
+    @first_shot.score == 10
   end
 
   def spare?
-    !strike? && @first_shot.score + @second_shot.score == Shot::STRIKE_SCORE
+    !strike? && @first_shot.score + @second_shot.score == 10
   end
 end

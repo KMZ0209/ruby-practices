@@ -21,7 +21,7 @@ class Game
     i = 0
     while i < @shot_instances.size
       if frames.size < 9
-        if @shot_instances[i].strike?
+        if @shot_instances[i].perfect_score
           frames << Frame.new(@shot_instances[i], Shot.new('0'))
           i += 1
         else
