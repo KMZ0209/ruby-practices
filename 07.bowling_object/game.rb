@@ -17,6 +17,8 @@ class Game
     game_score
   end
 
+  private
+
   def build_frames
     frames = []
     i = 0
