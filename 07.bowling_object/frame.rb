@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative './shot'
+
 class Frame
   attr_reader :first_shot, :second_shot, :third_shot
 
@@ -15,10 +16,10 @@ class Frame
   end
 
   def strike?
-    @first_shot.score == 10
+    @first_shot.score == Shot::STRIKE_SCORE
   end
 
   def spare?
-    @first_shot.score + @second_shot.score == 10
+    !strike? && @first_shot.score + @second_shot.score == Shot::STRIKE_SCORE
   end
 end

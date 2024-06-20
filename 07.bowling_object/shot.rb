@@ -2,6 +2,7 @@
 
 class Shot
   STRIKE_MARK = 'X'
+  STRIKE_SCORE = 10
   attr_reader :score
 
   def initialize(mark)
