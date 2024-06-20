@@ -4,19 +4,10 @@ class Shot
   attr_reader :score
 
   def initialize(mark)
-    @score = mark_to_score(mark)
+    @score = mark == 'X' ? 10 : mark.to_i
   end
 
   def strike?
     @score == 10
-  end
-
-  def mark_to_score(mark)
-    case mark
-    when 'X'
-      10
-    else
-      mark.to_i
-    end
   end
 end
