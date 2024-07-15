@@ -3,7 +3,7 @@
 require_relative 'ls_main'
 require_relative 'file_formatter'
 
-class LongFormat< FileFormat
+class LongFormat < FileFormat
   FILE_TYPE = {
     'file' => '-',
     'link' => 'l',

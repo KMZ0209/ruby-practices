@@ -2,6 +2,8 @@
 
 require_relative 'file_formatter'
 
+COLUMN_COUNT = 3
+
 class ShortFormat < FileFormat
   def output
     transposed_files = build_transposed_files

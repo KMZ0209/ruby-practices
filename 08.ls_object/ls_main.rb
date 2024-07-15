@@ -1,26 +1,13 @@
 # frozen_string_literal: true
 
-require 'optparse'
 require 'etc'
 require_relative 'long_formatter'
 require_relative 'short_formatter'
 
-COLUMN_COUNT = 3
-
 class FileList
-  def initialize
-    @options = parse_options
+  def initialize(options)
+    @options = options
     @files = fetch_files
-  end
-
-  def parse_options
-    options = {}
-    OptionParser.new do |opts|
-      opts.on('-a') { options['a'] = true }
-      opts.on('-r') { options['r'] = true }
-      opts.on('-l') { options['l'] = true }
-    end.parse(ARGV)
-    options
   end
 
   def fetch_files
