@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'ls_main'
-require_relative 'file_formatter'
+require_relative 'file_list'
+require_relative 'file_format'
 
 class LongFormat < FileFormat
   FILE_TYPE = {

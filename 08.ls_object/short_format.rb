@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'file_formatter'
+require_relative 'file_format'
 
 COLUMN_COUNT = 3
 

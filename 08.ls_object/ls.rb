@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require_relative 'ls_main'
+require_relative 'file_list'
 
 class LsCommand
   def initialize

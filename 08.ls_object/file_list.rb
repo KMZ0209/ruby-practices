@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'etc'
-require_relative 'long_formatter'
-require_relative 'short_formatter'
+require_relative 'long_format'
+require_relative 'short_format'
 
 class FileList
   def initialize(options)
