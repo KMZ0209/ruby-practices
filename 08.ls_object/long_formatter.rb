@@ -1,11 +1,38 @@
 # frozen_string_literal: true
 
+require_relative 'ls_main'
 require_relative 'file_formatter'
 
 class LongFormat< FileFormat
+  FILE_TYPE = {
+    'file' => '-',
+    'link' => 'l',
+    'directory' => 'd'
+  }.freeze
+
+  PERMISSION_TYPE = {
+    '0' => '---',
+    '1' => '--x',
+    '2' => '-w-',
+    '3' => '-wx',
+    '4' => 'r--',
+    '5' => 'r-x',
+    '6' => 'rw-',
+    '7' => 'rwx'
+  }.freeze
+
   def output
     output_total_block_count
     output_long_formatted_files
+  end
+
+  def self.file_type(stat_file)
+    FILE_TYPE[stat_file.ftype]
+  end
+
+  def self.build_permission(stat_file)
+    permission_value = stat_file.mode.to_s(8).slice(-3, 3)
+    permission_value.chars.map { |c| PERMISSION_TYPE[c] }.join('')
   end
 
   private
@@ -19,7 +46,7 @@ class LongFormat< FileFormat
     @files.each do |file|
       stat_file = File.stat(file)
       output_data = [
-        FileList.file_type(stat_file) + FileList.build_permission(stat_file),
+        LongFormat.file_type(stat_file) + LongFormat.build_permission(stat_file),
         stat_file.nlink,
         Etc.getpwuid(stat_file.uid).name,
         Etc.getgrgid(stat_file.gid).name,
