@@ -46,7 +46,7 @@ class FileList
   end
 
   def format_files
-    formatter = @options['l'] ? LongFormatter.new(@files) : ShortFormatter.new(@files)
+    formatter = @options['l'] ? LongFormat.new(@files) : ShortFormat.new(@files)
     formatter.output
   end
 

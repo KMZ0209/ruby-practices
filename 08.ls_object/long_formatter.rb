@@ -2,7 +2,7 @@
 
 require_relative 'file_formatter'
 
-class LongFormatter < FileFormatter
+class LongFormat< FileFormat
   def output
     output_total_block_count
     output_long_formatted_files

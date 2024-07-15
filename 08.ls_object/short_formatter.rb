@@ -2,7 +2,7 @@
 
 require_relative 'file_formatter'
 
-class ShortFormatter < FileFormatter
+class ShortFormat < FileFormat
   def output
     transposed_files = build_transposed_files
     max_file_size = @files.map(&:size).max
