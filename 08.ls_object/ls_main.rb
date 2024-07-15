@@ -24,7 +24,9 @@ class FileList
   end
 
   def fetch_files
-    files = @options['a'] ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
+    pattern = '*'
+    flag = @options['a'] ? File::FNM_DOTMATCH : 0
+    files = Dir.glob(pattern, flag)
     @options['r'] ? files.reverse : files
   end
 
